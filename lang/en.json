@@ -635,7 +635,9 @@
             "damage": "damage",
             "randomOffset": "Random Offset",
             "await": "Await",
-            "bind": "Bind"
+            "bind": "Bind",
+            "looseMatch": "Loose Match",
+            "exactMatch": "Exact Match"
         },
         "optionsInfo": {
 

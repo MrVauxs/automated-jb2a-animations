@@ -9,14 +9,28 @@ export class AAAutorecFunctions {
         return newName;
     }
 
-    static allMenuSearch(menus, name) {
-
+    static sortAndFilterMenus() {
+        /*
         let combinedMenus = [...menus.melee, ...menus.range, ...menus.ontoken,
-            ...menus.templatefx, ...menus.aura, ...menus.preset/*, ...menus.aefx*/];
-
+            ...menus.templatefx, ...menus.aura, ...menus.preset];
         let sortedMenus = combinedMenus.sort((a, b) => b.label?.replace(/\s+/g, '').length - a.label?.replace(/\s+/g, '').length);
 
-        return sortedMenus.find(x => x.label && name.includes(this.rinseName(x.label))) || false;
+        let  exactMatchMenus = sortedMenus.filter(x => x.exactMatch);
+        let looseMatchMenus = sortedMenus.filter(x => !x.exactMatch);
+        */
+
+        let combinedMenus = [...menus.melee, ...menus.range, ...menus.ontoken,
+            ...menus.templatefx, ...menus.aura, ...menus.preset];
+
+        let sortedMenus = combinedMenus.sort((a, b) => b.label?.replace(/\s+/g, '').length - a.label?.replace(/\s+/g, '').length);
+        return {
+            exactMatchMenus: sortedMenus.filter(x => x.exactMatch),
+            bestMatchMenus: sortedMenus.filter(x => !x.exactMatch),
+        }
+    }
+
+    static allMenuSearch(menus, rinsedName, trueName) {
+        return menus.exactMatchMenus.find(x => x.label && x.label === trueName) || menus.bestMatchMenus.find(x => x.label && rinsedName.includes(this.rinseName(x.label))) || false;
     }
 
     static singleMenuSearch(menu, name) {
@@ -28,7 +42,11 @@ export class AAAutorecFunctions {
 
         let sortedMenu = menu.sort((a, b) => b.label.replace(/\s+/g, '').length - a.label?.replace(/\s+/g, '').length);
 
-        return sortedMenu.find(x => name.includes(this.rinseName(x.label))) || false;
+        let exactMatchMenus = sortedMenu.filter(x => x.exactMatch);
+        let bestMatchMenus = sortedMenu.filter(x => !x.exactMatch);
+
+        return exactMatchMenus.find(x => x.label && x.label === trueName) || bestMatchMenus.find(x => x.label && name.includes(this.rinseName(x.label))) || false;
+        //return sortedMenu.find(x => name.includes(this.rinseName(x.label))) || false;
     }
 
     static singleMenuStrictSearch(menu, name) {

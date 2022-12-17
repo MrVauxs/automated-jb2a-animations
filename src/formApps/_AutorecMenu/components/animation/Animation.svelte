@@ -7,7 +7,10 @@
       TJSInput,
       TJSMenu,
       TJSSvgFolder,
-      TJSToggleIconButton }         from "@typhonjs-fvtt/svelte-standard/component";
+      TJSToggleIconButton,
+      TJSIconButton }         from "@typhonjs-fvtt/svelte-standard/component";
+
+   import TJSSvgCustomFolder from "./TJSSvgCustomFolder.svelte";
 
    import { createOverflowItems }   from "./createOverflowItems.js";
 
@@ -50,16 +53,35 @@
    const menu = {
       items: createOverflowItems(animation, category),
    };
+
+   //$: checkExactMatch = $animation.exactMatch;
+   $: isExactMatch = $animation.exactMatch;
+   $: exactMatchButton = {
+       icon: isExactMatch ? "fas fa-equals" : "fas fa-asterisk",
+       title: isExactMatch ? "autoanimations.menus.exactMatch" : "autoanimations.menus.looseMatch",
+       styles: { 'position': 'absolute', 'right': "3em", '--tjs-icon-button-background': 'none', 'font-size': '13px', '--tjs-icon-button-background-hover': 'none' },
+       onClickPropagate: false
+    };
+    function exacto() {
+      let exactMatchField = $animation.exactMatch;
+      if (exactMatchField) {
+         $animation.exactMatch = false;
+      } else {
+         $animation.exactMatch = true;
+      }
+
+    }
 </script>
 
 <div class=animation>
-   <TJSSvgFolder {folder}>
+   <TJSSvgCustomFolder {folder} {animation}>
+        <TJSIconButton button={exactMatchButton} on:click={() => $animation.exactMatch = !$animation.exactMatch} slot=prepend/>
         <TJSInput {input} slot=label />
         <TJSToggleIconButton button={buttonOverflow} slot=summary-end>
             <TJSMenu {menu} />
         </TJSToggleIconButton>
         <svelte:component this={selectBuildMenu(category.key)} {animation} {idx} {category}/>
-   </TJSSvgFolder>
+   </TJSSvgCustomFolder>
 </div>
 
 <style lang=scss>
