@@ -252,3 +252,7 @@ function moduleIncludes(test) {
     return !!game.modules.get(test);
 }
 //window.AAAutoRec = AAAutorecMenu;
+
+Hooks.on('AutomatedAnimations.playAnimation', async (sourceToken, item, options = {}) => {
+    AutomatedAnimations.playAnimation(sourceToken, item, options)
+})
